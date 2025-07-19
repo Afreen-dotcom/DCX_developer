@@ -1,13 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.css';
-//import Home from './pages/home';
-//import AboutUs from './pages/about';
 import RegisterAsDeveloper from './pages/register';
-import { Link,Routes,Route } from 'react-router-dom';
+import { Link,Routes,Route,useLocation } from 'react-router-dom';
 import Home from './pages/home';
 import AboutUs from './pages/about';
 function App() {
+  const location=useLocation();
+  const {pathname}=location;
+  console.log(pathname)
   return (
     <div>
         <div class="row align-items-start " >
@@ -72,7 +73,7 @@ function App() {
   <a href="#" className="list-group-item fw-bold" >Internet Marketing</a>
   <a href="#" className="list-group-item fw-bold" >XHTML Templates</a>  
   </ul>
-  <div class="card-footer fw-bold " >
+  {pathname==='/'? <div class="card-footer fw-bold " >
   <ul class="list-group  list-group-flush" >
   <div class="card-header fw-bold " >Newsletter</div>
   <li class="list-group-item fw-bold " >Subscribed Email:</li>
@@ -80,7 +81,9 @@ function App() {
   
   
   </ul>
-  </div>
+  </div>:''
+  }
+ 
     </div>
     </div>  
   <div class='col-lg-8 gy-5 gx-5 '>
@@ -88,6 +91,7 @@ function App() {
     <Routes>
       <Route path='/' element={<Home/>} />
       <Route path='/about' element={<AboutUs/>} />
+
       <Route path='/register' element={<RegisterAsDeveloper/>}/>
     </Routes>
     </div>  
