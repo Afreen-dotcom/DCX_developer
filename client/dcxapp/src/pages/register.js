@@ -12,17 +12,27 @@ const RegisterAsDeveloper=()=>{
     const handleLastNameChange=(e)=>setLastName(e.target.value);
     const handleEmailChange=(e)=> setEmail(e.target.value);
     const handleLocationChange=(e)=>setLocation(e.target.value)
-    const handleProfileChange=(e)=>setLocation(e.target.value)
 
     const handeleSubmit=(e)=>{
         e.preventDefault()
+        console.log(firstName,lastName,email)
         const formData= new FormData();
         formData.append('firstName',firstName)
         formData.append('lastName',lastName)
-        formData.append('Email',email)
-        formData.append('location',location)
-        formData.append('Profile',profile)
+        formData.append('email',email)
+        formData.append('city','city')
+        formData.append('state','state')
+        formData.append('resume',profile)
+
+        fetch('http://localhost:7000/register/',{
+            method:'POST',
+            
+            body:formData
+        }).then(response=>{return response.json()})
+        .then(result=>console.log(result))
+        .catch(err=>console.log(err));
     
+
     }
 
     return(
@@ -54,7 +64,7 @@ const RegisterAsDeveloper=()=>{
                 </div>
                 <div className="mb-3">
                 <label>
-                   Update Profile: <input type="file" className="form-control" />
+                   Upload Profile: <input type="file" className="form-control" onChange={(e)=>setProfile(e.target.files[0])}/>
                 </label>
                    
                 </div>
