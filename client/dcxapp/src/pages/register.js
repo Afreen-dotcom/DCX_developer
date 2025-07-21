@@ -28,10 +28,11 @@ const RegisterAsDeveloper=()=>{
     const  [lastName,setLastName]=useState('');
     const  [email,setEmail]=useState('');
     const  [profile,setProfile]=useState('');
-    const [position,setPosition] = useState([12.9762635, 77.7299444]);
+    const [position,setPosition] = useState([0,0]);
     const [city,setCity]=useState('');
     const [state,setState]=useState('');
-
+    const [skills,setSkills]=useState('');
+    const [Availability,setAvailabity]=useState('');
 
   
 
@@ -45,6 +46,7 @@ const RegisterAsDeveloper=()=>{
         formData.append('email',email)
         formData.append('city',city)
         formData.append('state',state)
+        formData.append('skills',skills)
         formData.append('resume',profile)
 
         fetch('http://localhost:7000/register/',{
@@ -59,10 +61,19 @@ const RegisterAsDeveloper=()=>{
     }
     
     useEffect(()=>{
+      const savedPosition = sessionStorage.getItem('userPosition');
+      if (savedPosition) {
+        const [lat, long] = JSON.parse(savedPosition);
+        setPosition([lat, long]);
+        return;
+      }
+
         if ('geolocation' in navigator) {
             navigator.geolocation.getCurrentPosition((position) => {
                 var lat=position.coords.latitude
                 var long= position.coords.longitude
+                sessionStorage.setItem('userPosition', JSON.stringify([lat, long]));
+
                 setPosition([lat,long]);
                 fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${long}`)
                 .then(response => response.json())
@@ -109,14 +120,7 @@ const RecenterMap = ({ position }) => {
           
 
 
-            <div class="col-md-6 d-flex align-items-center gap-2 mb-3">
-
-            <input
-  type="text"
-  placeholder="Enter your First name"
-  {...register('firstName', { required: true })}
-  className={`form-control ${errors.firstName ? 'border-danger' : ''}`}
-/>
+            <div class="col-md-6 d-flex align-items-center mb-3">
 
             <label for="exampleFormControlInput1" class="form-label mb-0 fixed-label" >First Name</label>
 
@@ -129,12 +133,30 @@ const RecenterMap = ({ position }) => {
                 <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter your last name" onChange={(e)=>setLastName(e.target.value)}></input>
                 </div>
                
-                <div class="col-md-6 d-flex align-items-center gap-5 ">
-                <label for="exampleFormControlInput1" class="form-label mb-0">Email</label>
+                <div class="col-md-6 d-flex align-items-center gap-2 mb-3">
+                <label for="exampleFormControlInput1" class="form-label mb-0 fixed-label">Email</label>
                 <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" onChange={(e)=>setEmail(e.target.value)}></input>
                 </div>
                
-                
+                <div class="col-md-6 d-flex align-items-center gap-2 mb-3">
+                <label for="exampleFormControlInput1" class="form-label mb-0 fixed-label" >Skills</label>
+                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter your skills" onChange={(e)=>setSkills(e.target.value)}></input>
+                </div>
+                 
+                <div class="col-md-6 d-flex align-items-center gap-2">
+                <label className="form-label mb-0">Availability</label>
+              {[ 'Full-Time', 'Part-Time'].map((time) => (
+            <div key={time} className="form-check form-check-inline">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="Availability"
+                value={time}
+                onChange={(e)=>{setAvailabity(e.target.value)}}
+              />
+              <label className="form-check-label">{time}</label>
+                </div>))}
+                </div>
 
               
                 <div className="mb-3">

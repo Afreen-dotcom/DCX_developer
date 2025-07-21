@@ -9,6 +9,7 @@ var register=mongoose.Schema({
     city:String,
     state:String,
     skills:String,
+    Availability:String,
     resume:Buffer
 },{timestamps:true})
 

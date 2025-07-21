@@ -9,6 +9,7 @@ export const create_profile=(req,res)=>{
     city:req.body.city,
     state:req.body.state,
     skills:req.body.skills,
+    Availability:req.body.Availability,
     resume:req.file.buffer
    }) 
    register.save()
@@ -43,6 +44,7 @@ export const update_profile=(req,res)=>{
         city:req.body.city,
         state:req.body.state,
         skills:req.body.skills,
+        Availability:req.body.Availability,
         resume:req.file.buffer
        }) 
        register_model.findByIdAndUpdate(req.params.id,register)
