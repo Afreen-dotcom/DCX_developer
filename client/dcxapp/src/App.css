@@ -29,3 +29,25 @@ color:#054DBC
 }
 #image{background-image:url('./assets/images/web.jpg');background-repeat: no-repeat;background-position: center; min-height: 150px}
 #left{ background-color: #1C448F; width:20rem;border:none}
+
+
+#map{
+height: 300px;
+width: 100%;
+}
+.fixed-label {
+  width: 100px; /* adjust as needed */
+  white-space: nowrap;
+}
+.error {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+.input-error {
+  border: 2px solid red;
+  outline: none;
+}
+.input-error:focus {
+  box-shadow: 0 0 5px red;
+}

@@ -5,11 +5,18 @@ import RegisterAsDeveloper from './pages/register';
 import { Link,Routes,Route,useLocation } from 'react-router-dom';
 import Home from './pages/home';
 import AboutUs from './pages/about';
+import Contact from './pages/contact';
+import { useState } from 'react';
 function App() {
   const location=useLocation();
   const {pathname}=location;
-  console.log(pathname)
+  //console.log(pathname)
+
+  const [name,setName]=useState('');
+  const [email,setEmail]=useState('');
+
   return (
+
     <div>
         <div class="row align-items-start " >
           <div class="col-6 mt-2">
@@ -42,10 +49,14 @@ function App() {
           <Link class="nav-link text-white fw-bold" to="/register">Register As Developer</Link>
         </li>
         <li class="nav-item">
-          <Link class="nav-link text-white fw-bold" to="#">Contact us</Link>
+          <Link class="nav-link text-white fw-bold" to="/contact">Contact us</Link>
         </li>
       </ul>
-      <div class="d-flex text-white" > Welcome Back</div>
+      { localStorage.getItem("name")!==''?
+        <div class="d-flex text-white" > Welcome Back, {localStorage.getItem("name")} </div>:
+        ""
+      }
+      
       </div>
   </div>
 
@@ -77,7 +88,13 @@ function App() {
   <ul class="list-group  list-group-flush" >
   <div class="card-header fw-bold " >Newsletter</div>
   <li class="list-group-item fw-bold " >Subscribed Email:</li>
-  <li class="list-group-item fw-normal" >Name: <input class='mb-2'></input>  Email: <input class='mb-2'></input> <button >Send</button><button>clear</button></li>
+  <li class="list-group-item fw-normal" >
+    <form id="form">
+    Name: <input class='mb-2' onChange={(e)=>{setName(e.target.value)}}></input>  
+  Email: <input class='mb-2' onChange={(e)=>{setEmail(e.target.value)}}></input> 
+  <button onClick={()=>{email===''?alert("please Enter Email"):localStorage.setItem("name",name)}}>Send</button>
+  <button onClick={()=>{document.getElementById('form').reset()}}>clear</button></form>
+  </li>
   
   
   </ul>
@@ -91,8 +108,8 @@ function App() {
     <Routes>
       <Route path='/' element={<Home/>} />
       <Route path='/about' element={<AboutUs/>} />
-
       <Route path='/register' element={<RegisterAsDeveloper/>}/>
+      <Route path='/contact' element={<Contact/>}/>
     </Routes>
     </div>  
   </div>  
