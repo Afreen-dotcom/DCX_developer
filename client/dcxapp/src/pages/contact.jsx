@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../App.css'
+import '../App.scss'
 const Contact=()=>{
   const [formData, setFormData] = useState({
     fullName: '',
@@ -8,12 +8,16 @@ const Contact=()=>{
     phone: '',
     time: '',
     location: '',
-    budget: 10000,
+    budget: 100000,
     services: [],
     currentwebsite: '',
     noofpages: '',
   });
 
+  const [validationErrors, setValidationErrors] = useState({
+    fullname: false,
+    email: false,
+  });
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -29,12 +33,40 @@ const Contact=()=>{
     } else if (name === 'budget') {
       setFormData({ ...formData, budget: parseInt(value) });
     } else {
-      setFormData({ ...formData, [name]: value });
+    // Validation check
+    if (name === 'fullname') {
+      setValidationErrors((prev) => ({
+        ...prev,
+        fullname: value.length < 4,
+      }));
     }
+    if (name === 'email') {
+      setValidationErrors((prev) => ({
+        ...prev,
+        email: !value.endsWith('@gmail.com'),
+      }));
+    }
+ 
+    setFormData({ ...formData, [name]: value });
+  }
+    
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const errors = {
+      fullname: formData.fullName.trim().length < 4,
+      email: !formData.email.includes('@') || !formData.email.endsWith('.com'),
+      phone: formData.phone.trim().length < 6,
+      location: formData.location.trim() === '',
+      currentwebsite: formData.currentwebsite.trim() === '',
+      noofpages: formData.noofpages === '',
+    };
+    if (Object.values(errors).some((err) => err)) {
+      // Stop form submission if there are errors
+      return;
+    }
     fetch('http://localhost:7000/contact/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -64,12 +96,17 @@ const Contact=()=>{
               type="text"
               name="fullName"
               value={formData.fullName}
-              onChange={handleChange}
-              className="form-control"
-            />
+              onChange={(e)=>handleChange(e)}
+              className={`form-control ${validationErrors.fullname ? 'is-invalid' : ''}`}/>
+             {validationErrors.fullname && (
+  <div className="invalid-feedback d-block">
+    Full Name is required.
+  </div>
+)}
+  {/* Full Name is required and must be at least 4 characters. */}
           </div>
         </div>
-
+ 
         {/* Email */}
         <div className="mb-2 row">
           <label className="col-sm-2 col-form-label">Email Address:</label>
@@ -78,9 +115,13 @@ const Contact=()=>{
               type="email"
               name="email"
               value={formData.email}
-              onChange={handleChange}
-              className="form-control"
-            />
+              onChange={(e)=>handleChange(e)}
+              className={`form-control ${validationErrors.email ? 'is-invalid' : ''}`} />
+              {validationErrors.email && (
+              <div className="invalid-feedback d-block">
+               Please enter a valid email address.
+                 </div>
+                           )}
           </div>
         </div>
 
@@ -92,11 +133,15 @@ const Contact=()=>{
               type="tel"
               name="phone"
               value={formData.phone}
-              onChange={handleChange}
-              className="form-control"
-            />
-          </div>
-        </div>
+              onChange={(e)=>handleChange(e)}
+              className="form-control"/>
+              {validationErrors.phone && (
+           <div className="invalid-feedback d-block">
+            Phone Number is required.
+              </div>
+                        )}
+       </div>
+     </div>
 
         {/* Call Time (Radio Buttons) */}
         <div className="d-flex align-items-center gap-4 mb-2">
@@ -109,7 +154,7 @@ const Contact=()=>{
                 name="calltime"
                 value={time}
                 checked={formData.time === time}
-                onChange={handleChange}
+                onChange={(e)=>handleChange(e)}
               />
               <label className="form-check-label">{time}</label>
             </div>
@@ -124,9 +169,14 @@ const Contact=()=>{
               type="text"
               name="location"
               value={formData.location}
-              onChange={handleChange}
+              onChange={(e)=>handleChange(e)}
               className="form-control"
             />
+                             {validationErrors.location && (
+              <div className="invalid-feedback d-block">
+               Location is required.
+                 </div>
+                           )}
           </div>
         </div>
 
@@ -140,10 +190,10 @@ const Contact=()=>{
               type="range"
               name="budget"
               min={1000}
-              max={10000}
+              max={100000}
               step={100}
               value={formData.budget}
-              onChange={handleChange}
+              onChange={(e)=>handleChange(e)}
             />
             <div class="col-sm-3">
             <input
@@ -165,7 +215,7 @@ const Contact=()=>{
                   type="checkbox"
                   value={svc}
                   checked={formData.services.includes(svc)}
-                  onChange={handleChange}
+                  onChange={(e)=>handleChange(e)}
                 />
                 <label className="form-check-label">{svc}</label>
               </div>
@@ -180,9 +230,14 @@ const Contact=()=>{
                 type="text"
                 name="currentwebsite"
                 value={formData.currentwebsite}
-                onChange={handleChange}
+                onChange={(e)=>handleChange(e)}
                 className="form-control"
               />
+              {validationErrors.currentwebsite && (
+              <div className="invalid-feedback d-block">
+               Current Website is required.
+                 </div>
+                           )}
             </div>
           </div>
 
@@ -194,11 +249,15 @@ const Contact=()=>{
                 type="number"
                 name="noofpages"
                 value={formData.noofpages}
-                onChange={handleChange}
-                className="form-control"
-              />
-            </div>
-          </div>
+                onChange={(e)=>handleChange(e)}
+                className="form-control"/>
+                {validationErrors.phone && (
+                  <div className="invalid-feedback d-block">
+                   Number of Pages is required.
+                     </div>
+                               )}
+                    </div>
+                </div>
         </div><br></br>
 
         {/* Submit Button */}

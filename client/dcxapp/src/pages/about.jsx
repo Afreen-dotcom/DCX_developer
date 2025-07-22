@@ -17,9 +17,7 @@ function AboutUs(){
                 <source src={adVideo} type="video/mp4">
                 </source>
                 </video>
-                <div className="d-flex flex-wrap justify-content-center gap-3">
-            <button className="btn btn-outline-primary px-4 py-2 fw-semibold">▶️ Play / Pause</button>
-            </div>  
+                  
     </div>
    </div>
         </div>

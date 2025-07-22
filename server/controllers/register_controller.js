@@ -1,5 +1,5 @@
 import register_model from "../models/register_model.js";
-export const create_profile=(req,res)=>{
+export const create_profile= async (req,res)=>{
     console.log(req.body);
 
    var register= new register_model({
@@ -12,7 +12,7 @@ export const create_profile=(req,res)=>{
     Availability:req.body.Availability,
     resume:req.file.buffer
    }) 
-   register.save()
+   await register.save()
    .then(result=>res.send(result))
    .catch(err=>console.log(err));
 }

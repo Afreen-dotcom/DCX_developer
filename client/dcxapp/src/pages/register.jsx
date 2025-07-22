@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import '../App.css'
+import '../App.scss'
 import { MapContainer, TileLayer, Marker, useMap,Popup} from 'react-leaflet'
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -47,6 +47,7 @@ const RegisterAsDeveloper=()=>{
         formData.append('city',city)
         formData.append('state',state)
         formData.append('skills',skills)
+        formData.append('Availability',Availability)
         formData.append('resume',profile)
 
         fetch('http://localhost:7000/register/',{
