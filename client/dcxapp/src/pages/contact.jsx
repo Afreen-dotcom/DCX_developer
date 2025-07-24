@@ -90,7 +90,18 @@ const handleSubmit = (e) => {
         setShowErrorToast(true)
         return}
       setShowSuccessToast(true);
-
+      setFormData({
+        fullname: '',
+        email: '',
+        phone: '',
+        time: '',
+        location: '',
+        budget: 0,
+        services: [],
+        currentwebsite: '',
+        noofpages: '',
+      });
+      
       console.log('Response:', data);
     })
     .catch((err) => {
@@ -113,7 +124,7 @@ const handleSubmit = (e) => {
     <Toast.Header>
       <strong className="me-auto">Success</strong>
     </Toast.Header>
-    <Toast.Body className="text-white">Profile registered! Please Login to see/edit your details</Toast.Body>
+    <Toast.Body className="text-white">Thank you for reaching out to us.We will get back to you as soon as possible.</Toast.Body>
   </Toast>
 
   <Toast

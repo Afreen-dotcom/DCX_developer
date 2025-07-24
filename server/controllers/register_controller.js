@@ -61,8 +61,8 @@ export const getProfile=(req,res)=>{
             res.send({message:"Invalid Credential"});
             return
         }
-        const token= jwt.sign({email:req.body.email,password:req.body.password},process.env.JWT_SECRET,{expiresIn:'1h'});
-        const { password, resume, ...dataWithoutSensitive } = result;
+        const token= jwt.sign({ email:req.body.email,password:req.body.password},process.env.JWT_SECRET,{expiresIn:'1h'});
+        const { password, ...dataWithoutSensitive } = result;
 
         
     res.send({
@@ -95,32 +95,30 @@ catch(err){
 }
 
 }
-export const delProfile=[verifyToken, async (req, res) => {
-    try {
-      const result = await RegisterModel.findByIdAndDelete(req.params.id);
-      res.send(result);
-    } catch (err) {
-      console.error(err);
-      res.send({ error: 'Server error' });
-    }
-  }]
 
-export const updateProfile=[verifyToken, async(req,res)=>{
+
+export const updateProfile= async(req,res)=>{
     try{
+
     var register= new RegisterModel({
         _id:req.params.id,
         firstName:req.body.firstName,
         lastName:req.body.lastName,
         email:req.body.email,
+        password:req.body.password,
         city:req.body.city,
         state:req.body.state,
         skills:req.body.skills,
         Availability:req.body.Availability,
-        resume:req.file.buffer
+        
        }) 
+       console.log(register)
      await  RegisterModel.findByIdAndUpdate(req.params.id,register)
        .then(result=>res.send(result))
-       .catch(err=>res.send({"error":err}));
+       .catch(err=>{console.log(err)
+        res.send({"error":err})
+       }
+    );
     }
     catch(err){
         
@@ -129,4 +127,4 @@ export const updateProfile=[verifyToken, async(req,res)=>{
     }
 
 
-}]
+}

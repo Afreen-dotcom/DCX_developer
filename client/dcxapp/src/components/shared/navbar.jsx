@@ -35,15 +35,17 @@ const Navbar=()=>{
                 alert('Invalid credential');
                 return
             }
-            //console.log('login Successful',data);
+            console.log('login Successful',data);
+            console.log(data.data._doc)
             const userData= {
-              id:data.data._id,
-              firstName: data.data.firstName, 
-              lastName: data.data.lastName,
-              city:data.data.city,
-              state:data.data.state,
-              skills:data.data.skills,
-              Availability:data.data.Availability,// Assuming data.data contains the user's first name
+              id:data.data._doc._id,
+              firstName: data.data._doc.firstName, 
+              lastName: data.data._doc.lastName,
+              email:data.data._doc.email,
+              city:data.data._doc.city,
+              state:data.data._doc.state,
+              skills:data.data._doc.skills,
+              Availability:data.data._doc.Availability,
               
           };
           updateUser(userData);
@@ -91,7 +93,7 @@ const Navbar=()=>{
         </li>
         {user!==null?
         <li class="nav-item">
-          <Link class="nav-link text-white fw-bold" to="/myprofile">my Profile</Link>
+          <Link class="nav-link text-white fw-bold" to="/myprofile">My Profile</Link>
         </li>:''}
       </ul>
       {user===null?

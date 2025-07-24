@@ -202,7 +202,7 @@ const RecenterMap = ({ position }) => {
         <div className='container mt-2 mb-2'> 
             <h2 class="mb-3 blue-text" >Register As A Developer</h2>
             <p class='fw-bold'>Please use this Form to register as a developer here.</p>
-            <form onSubmit={handeleSubmit}>
+            <form onSubmit={(e)=>handeleSubmit(e)}>
             
           
 

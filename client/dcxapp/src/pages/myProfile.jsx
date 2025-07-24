@@ -1,16 +1,19 @@
-import React,{ useState }  from 'react';
+import React,{ useContext, useState }  from 'react';
 import { Toast, ToastContainer } from 'react-bootstrap';
+import LoginContext from '../context/loginContext';
 export const MyProfile =()=>{
-    const [firstName,setFirstName]=useState('');
-        const  [lastName,setLastName]=useState('');
-        const  [email,setEmail]=useState('');
-        const [password,setPassword]=useState('');
-        const [confirmPassword,setConfirmPassword]=useState('');
-        const [city,setCity]=useState('');
-        const [state,setState]=useState('');
-        const [skills,setSkills]=useState('');
-        const [Availability,setAvailability]=useState('');
-    const [showSuccessToast, setShowSuccessToast] = useState(false);
+
+
+    const {user,updateUser}=useContext(LoginContext);
+    const [firstName,setFirstName]=useState(user.firstName);
+        const  [lastName,setLastName]=useState(user.lastName);
+        const  [email,setEmail]=useState(user.email);
+       
+        const [city,setCity]=useState(user.city);
+        const [state,setState]=useState(user.state);
+        const [skills,setSkills]=useState(user.skills);
+        const [Availability,setAvailability]=useState(user.Availability);
+        const [showSuccessToast, setShowSuccessToast] = useState(false);
         const [showErrorToast, setShowErrorToast] = useState(false);
         const[errorMessage,setErrorMessage]=useState("Something went wrong. Please try again.");
          const [errors, setErrors] = useState({});
@@ -24,13 +27,43 @@ export const MyProfile =()=>{
             if (firstName.length < 3) newErrors.firstName = true;
             if (lastName.length < 3) newErrors.lastName = true;
             if (!emailRegex.test(email)) newErrors.email = true;
-            if (!passwordRegex.test(password)) newErrors.password = true;
-            if (password !== confirmPassword) newErrors.confirmPassword = true;
             if (skills.length < 3) newErrors.skills = true;
           
             setErrors(newErrors);
             return Object.keys(newErrors).length === 0;
           };
+
+          const token = localStorage.getItem('token'); // Make sure 'token' is the correct key
+
+          const handleSubmit=(e)=>{
+            e.preventDefault()
+            var payload={
+                firstName:firstName,
+                lastName: lastName,
+                email: email,
+                city: city,
+                state: state,
+                skills: skills,
+                Availability: Availability
+              }
+             
+            fetch(`http://localhost:7000/register/update/${user.id}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `${localStorage.getItem('token')}` 
+                },
+
+                body: JSON.stringify(payload)
+              })
+              .then(response => response.json())
+              .then(data => {
+                console.log('Update successful:', data);
+              })
+              .catch(error => {
+                console.log('Error updating:', error);
+              });
+          }
 return(
 
     <div class='card border-primary container mb-4' style={{  height: "500px",overflowY:"auto"}}>
@@ -68,7 +101,7 @@ return(
         <div className='container mt-2 mb-2'> 
             <h2 class="mb-3 blue-text" >My Profile</h2>
             <p class='fw-bold'>You can edit your developer profile here.</p>
-            <form >
+            <form onSubmit={handleSubmit}>
             
           
 
@@ -99,7 +132,11 @@ return(
                
                 <div class="col-md-6 d-flex align-items-center gap-2 mb-3">
                 <label for="exampleFormControlInput1" class="form-label mb-0 fixed-label" >Skills</label>
-                <input type="text" class={`form-control ${errors.skills ? 'border-danger' : ''}`} id="exampleFormControlInput1" placeholder="Enter your skills" onChange={(e)=>setSkills(e.target.value)}value={skills}></input>
+                
+                <div>
+                <input type="text" class={`form-control ${errors.skills ? 'border-danger' : ''}`} id="exampleFormControlInput1" placeholder="Enter comma seperated skills" onChange={(e)=>setSkills(e.target.value)}value={skills}></input>
+                {errors.skills?<small class='red-text'>Enter more than three chars</small>:''}
+                </div>
                 </div>
                  
                 <div class="col-md-6 d-flex align-items-center gap-2">
@@ -110,7 +147,7 @@ return(
                 className="form-check-input"
                 type="radio"
                 name="Availability"
-                value={time}
+                value={Availability}
                 onChange={(e)=>{setAvailability(e.target.value)}}
               />
               <label className="form-check-label">{time}</label>
@@ -119,10 +156,7 @@ return(
 
               
                 
-                <div class="col-md-6 d-flex align-items-center gap-5 ">
-                <label for="exampleFormControlInput1" class="form-label mb-0 fixed-label">view Profile</label>
-                <input type="file" accept="application/pdf"className="form-control" />
-                </div>
+                
                 <button type="submit" className="btn btn-primary">Update</button>     
                       
     </form>
