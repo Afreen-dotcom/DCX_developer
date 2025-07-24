@@ -5,6 +5,7 @@ import AboutUs from '../pages/about';
 import Contact from '../pages/contact';
 import BrowseDevelopers from '../pages/browse'
 import RegisterAsDeveloper from '../pages/register';
+import { MyProfile } from "../pages/myProfile";
 const AppRoutes=()=>{
     return(
         <div class='col-lg-8 gy-5 gx-5 '>
@@ -12,8 +13,10 @@ const AppRoutes=()=>{
       <Route path='/' element={<Home/>} />
       <Route path='/about' element={<AboutUs/>} />
       <Route path='/register' element={<RegisterAsDeveloper/>}/>
-      <Route path='/profiles' element={<BrowseDevelopers/>}/>
+      <Route path='/browse' element={<BrowseDevelopers/>}/>
       <Route path='/contact' element={<Contact/>}/>
+      <Route path="/myprofile" element={<MyProfile/>}/>
+     
     </Routes>
     </div>
     )

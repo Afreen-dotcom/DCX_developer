@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from'react';
+import { OpenResume } from '../utils/openResume';
 import '../App.scss'
 const Home=()=>{
+
     const [latestDev,setLatestDev]=useState([]);
     useEffect(()=>{
       fetch('http://localhost:7000/register/profiles')
     .then(response=>{return response.json()})
         .then(result=>{
-          console.log(Array.isArray(latestDev)); // true if it's an array
-console.log(typeof latestDev);
           setLatestDev(result);})
         .catch(err=>console.log(err));
 
-    },[latestDev])
-
+    },[])
+    
+  
+    
     return (
         <div >
 
@@ -35,23 +37,22 @@ console.log(typeof latestDev);
     <h3 class="card-title fw-bold text-center">Latest DCX Developers</h3>
     <div class="card-body d-flex flex-column flex-md-row">
     
-      
-      
-        {
-        latestDev.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      {latestDev.length>0?latestDev.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         .slice(0, 4).map((item)=>(
-                <table class="table table-borderless">
+                <table class="table table-borderless " >
                       <thead class='blue-text'><tr><th>{item.firstName} {item.lastName}</th></tr></thead>
                       <tbody>
                         {item.city===''&& item.state===''?<tr><td>Location: Not Available</td></tr>:<tr><td>Location: {item.city}, {item.state} </td></tr>}
 
                         <tr><td>Skills: {item.skills}</td></tr>
                         <tr><td>Availability: {item.Availability}</td></tr>
-                        <tr><td >View Profile</td></tr>
+                        <tr><td class=' btn btn-link blue-text ' onClick={() => OpenResume(item._id)}>View Profile</td></tr>
                       </tbody>
                       </table>
         )
-        )}
+        ):<div style={{height:'200px'}}><h4 className='text-center'>Developers Not Available</h4></div>}
+      
+        
       
       </div>
       

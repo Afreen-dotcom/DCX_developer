@@ -1,16 +1,26 @@
 import mongoose from "mongoose";
 
-var contactschema=new mongoose.Schema({
-   fullName:String,
-   email:String,
-   phone:Number,
-   time:String,
-   location:String,
-   budget:Number,
-   services:String,
-   currentwebsite:String,
-   noofpages:Number,
+var contactSchema=new mongoose.Schema({
+   fullName: {
+      type: String,
+      required: true
+    },
+    email: {
+      type: String,
+      required: true
+    },
+    phone: {
+      type: Number,
+      required: true
+    },
+    time: String,
+    location: String,
+    budget: Number,
+    services: String,
+    currentwebsite: String,
+    noofpages: Number
+  
 
 })
-var contactmodel=mongoose.model('contact',contactschema)
-export default contactmodel;
+
+export default new mongoose.model('Contact',contactSchema);

@@ -10,10 +10,10 @@ $image-bg: url('./assets/images/web.jpg');
 
 .align-items-start {
   background-image: $section-bg;
- 
   display: flex;
   color: white;
 }
+
 
 .navbar,
 .list-group-item,
@@ -39,6 +39,7 @@ $image-bg: url('./assets/images/web.jpg');
 
 body {
   overflow-x: hidden;
+  
 }
 
 .blue-text {
@@ -73,7 +74,7 @@ body {
 }
 
 .fixed-label {
-  width: 100px;
+  width: 200px;
   white-space: nowrap;
 }
 
@@ -90,4 +91,25 @@ body {
   &:focus {
     box-shadow: 0 0 5px $error-color;
   }
+}
+h6{
+  color: white;
+}
+.dev-row:hover {
+  background-color: #f2f2f2;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+.btn-outline-light.text-white {
+  &:hover {
+    color: $primary-color !important;        // changes text to Bootstrap's primary
+   
+  }
+}
+#not-found{
+  background-color: #efeee8;
+}
+.red-text
+{
+  color:red;
 }

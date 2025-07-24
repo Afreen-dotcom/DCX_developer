@@ -1,5 +1,6 @@
 import React,{useState} from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation,Link } from "react-router-dom";
+
 import '../../App.scss'
 const Sidebar=()=>{
     const location=useLocation();
@@ -17,17 +18,19 @@ const Sidebar=()=>{
   </div>
   <ul class="list-group list-group-item-action list-group-flush ">
     
-  <a href="#" className="list-group-item  fw-bold" >SEO</a>
-  <a href="#" className="list-group-item  fw-bold" >PHP</a>
-  <a href="#" className="list-group-item fw-bold" >Ajax</a>
-  <a href="#" className="list-group-item fw-bold" >jQuery</a>
-  <a href="#" className="list-group-item fw-bold" >Web design</a>
-  <a href="#" className="list-group-item fw-bold" >Web Programming</a>
-  <a href="#" className="list-group-item fw-bold" >Content Creation</a>
-  <a href="#" className="list-group-item fw-bold" >Internet Marketing</a>
-  <a href="#" className="list-group-item fw-bold" >XHTML Templates</a>  
+  <Link to="/browse" state={{ skill: "SEO" }}className="list-group-item fw-bold">SEO</Link>
+      <Link to="/browse" state={{ skill: "PHP" }} className="list-group-item fw-bold">PHP</Link>
+      <Link to="/browse" state={{ skill: "PHP" }}  className="list-group-item fw-bold">Ajax</Link>
+      <Link to="/browse" state={{ skill: "Ajax" }}  className="list-group-item fw-bold">jQuery</Link>
+      <Link to="/browse" state={{ skill: "Web design" }} className="list-group-item fw-bold">Web design</Link>
+      <Link to="/browse" state={{ skill: "Web Programming" }} className="list-group-item fw-bold">Web Programming</Link>
+      <Link to="/browse" state={{ skill: "Content Creation" }} className="list-group-item fw-bold">Content Creation</Link>
+      <Link to="/browse" state={{ skill: "Internet Marketing" }} className="list-group-item fw-bold">Internet Marketing</Link>
+      <Link to="/browse" state={{ skill: "XHTML Templates" }} className="list-group-item fw-bold">XHTML Templates</Link>
+
+
   </ul>
-  {pathname==='/'? <div class="card-footer fw-bold " >
+  {pathname==='/' && localStorage.getItem("name")===null? (<div class="card-footer fw-bold " >
   <ul class="list-group  list-group-flush" >
   <div class="card-header fw-bold " >Newsletter</div>
   <li class="list-group-item fw-bold " >Subscribed Email:</li>
@@ -38,11 +41,11 @@ const Sidebar=()=>{
   <button onClick={()=>{email===''?alert("please Enter Email"):localStorage.setItem("name",name)}}>Send</button>
   <button onClick={()=>{document.getElementById('form').reset()}}>clear</button></form>
   </li>
-  
-  
   </ul>
-  </div>:''
-  }
+  </div>):pathname==='/' && localStorage.getItem("name")!==null?(<div class="card-footer" ><div class="card-header fw-bold " >Newsletter</div>
+    <h6>Thanks for subscribing. Exciting updates coming your way.</h6>
+  </div>):''}
+  
  
     </div>
     </div>

@@ -1,38 +1,44 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../App.scss'
+import '../App.scss';
+import { Toast, ToastContainer } from 'react-bootstrap';
 const Contact=()=>{
   const [formData, setFormData] = useState({
-    fullName: '',
+    fullname: '',
     email: '',
     phone: '',
     time: '',
     location: '',
-    budget: 100000,
+    budget: 0,
     services: [],
     currentwebsite: '',
     noofpages: '',
   });
-
-  const [validationErrors, setValidationErrors] = useState({
-    fullname: false,
-    email: false,
-  });
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-
-    if (type === 'checkbox') {
-      setFormData((prev) => {
-        const updatedServices = checked
-          ? [...prev.services, value]
-          : prev.services.filter((s) => s !== value);
-        return { ...prev, services: updatedServices };
-      });
-    } else if (type === 'radio') {
-      setFormData({ ...formData, time: value });
-    } else if (name === 'budget') {
-      setFormData({ ...formData, budget: parseInt(value) });
-    } else {
+ 
+    // Add this state:
+const [validationErrors, setValidationErrors] = useState({
+  fullname: false,
+  email: false,
+});
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+     const [showErrorToast, setShowErrorToast] = useState(false);
+     const[errorMessage,setErrorMessage]=useState("Something went wrong. Please try again.");
+// Update handleChange function:
+const handleChange = (e) => {
+  const { name, value, type, checked } = e.target;
+ 
+  if (type === 'checkbox') {
+    setFormData((prev) => {
+      const updatedServices = checked
+        ? [...prev.services, value]
+        : prev.services.filter((s) => s !== value);
+      return { ...prev, services: updatedServices };
+    });
+  } else if (type === 'radio') {
+    setFormData({ ...formData, calltime: value });
+  } else if (name === 'budget') {
+    setFormData({ ...formData, budget: parseInt(value) });
+  } else {
     // Validation check
     if (name === 'fullname') {
       setValidationErrors((prev) => ({
@@ -49,55 +55,96 @@ const Contact=()=>{
  
     setFormData({ ...formData, [name]: value });
   }
-    
+};
+ 
+const handleSubmit = (e) => {
+  e.preventDefault();
+ 
+ 
+  const errors = {
+    fullname: formData.fullname.trim().length < 4,
+    email: !formData.email.includes('@') || !formData.email.endsWith('.com'),
+    phone: formData.phone.trim().length < 6,
+    location: formData.location.trim() === '',
+    currentwebsite: formData.currentwebsite.trim() === '',
+    noofpages: formData.noofpages === '',
   };
+ 
+  setValidationErrors(errors);
+ 
+  if (Object.values(errors).some((err) => err)) {
+    // Stop form submission if there are errors
+    return;
+  }
+ 
+  // Proceed with form submission
+  fetch('http://localhost:7000/contact/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(formData),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data && data.error) {
+        setErrorMessage(data.error)
+        setShowErrorToast(true)
+        return}
+      setShowSuccessToast(true);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const errors = {
-      fullname: formData.fullName.trim().length < 4,
-      email: !formData.email.includes('@') || !formData.email.endsWith('.com'),
-      phone: formData.phone.trim().length < 6,
-      location: formData.location.trim() === '',
-      currentwebsite: formData.currentwebsite.trim() === '',
-      noofpages: formData.noofpages === '',
-    };
-    if (Object.values(errors).some((err) => err)) {
-      // Stop form submission if there are errors
-      return;
-    }
-    fetch('http://localhost:7000/contact/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
+      console.log('Response:', data);
     })
-      .then((res) => res.json())
-      .then((data) => {
-        alert(data.message || 'Form submitted successfully');
-        console.log('Response:', data);
-      })
-      .catch((err) => {
-        console.error('Error:', err);
-        alert('Submission failed');
-      });
-  };
+    .catch((err) => {
 
+     setShowErrorToast(true);
+     console.error('Error:', err);
+    });
+};
+ 
   return (
     <div class='card border-primary container mb-4'>
+      <ToastContainer position="bottom-end" className="p-3">
+  <Toast
+    bg="success"
+    onClose={() => setShowSuccessToast(false)}
+    show={showSuccessToast}
+    delay={3000}
+    autohide
+  >
+    <Toast.Header>
+      <strong className="me-auto">Success</strong>
+    </Toast.Header>
+    <Toast.Body className="text-white">Profile registered! Please Login to see/edit your details</Toast.Body>
+  </Toast>
+
+  <Toast
+    bg="danger"
+    onClose={() => setShowErrorToast(false)}
+    show={showErrorToast}
+    delay={3000}
+    autohide
+  >
+    <Toast.Header>
+      <strong className="me-auto">Error</strong>
+    </Toast.Header>
+    <Toast.Body className="text-white">
+      {errorMessage}
+    </Toast.Body>
+  </Toast>
+
+</ToastContainer>
       <h2 class="blue-text">Contact Us</h2>
       <p className='fw-bold'>Please use this form to contact a member of our website team</p>
       <form onSubmit={handleSubmit} >
         {/* Full Name */}
         <div className="mb-2 row">
-          <label className="col-sm-2 col-form-label">Full Name:</label>
+          <label className="col-md-3  col-form-label">Full Name:</label>
           <div className="col-sm-3">
             <input
               type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={(e)=>handleChange(e)}
-              className={`form-control ${validationErrors.fullname ? 'is-invalid' : ''}`}/>
+              name="fullname"
+              value={formData.fullname}
+              onChange={handleChange}
+             className={`form-control ${validationErrors.fullname ? 'is-invalid' : ''}`}/>
              {validationErrors.fullname && (
   <div className="invalid-feedback d-block">
     Full Name is required.
@@ -109,13 +156,13 @@ const Contact=()=>{
  
         {/* Email */}
         <div className="mb-2 row">
-          <label className="col-sm-2 col-form-label">Email Address:</label>
+          <label className="col-md-3  col-form-label">Email Address:</label>
           <div className="col-sm-3">
             <input
               type="email"
               name="email"
               value={formData.email}
-              onChange={(e)=>handleChange(e)}
+              onChange={handleChange}
               className={`form-control ${validationErrors.email ? 'is-invalid' : ''}`} />
               {validationErrors.email && (
               <div className="invalid-feedback d-block">
@@ -124,25 +171,25 @@ const Contact=()=>{
                            )}
           </div>
         </div>
-
+ 
         {/* Phone */}
         <div className="mb-2 row">
-          <label className="col-sm-2 col-form-label">Phone Number:</label>
+          <label className="col-md-3  col-form-label">Phone Number:</label>
           <div className="col-sm-3">
             <input
               type="tel"
               name="phone"
               value={formData.phone}
-              onChange={(e)=>handleChange(e)}
+              onChange={handleChange}
               className="form-control"/>
-              {validationErrors.phone && (
-           <div className="invalid-feedback d-block">
-            Phone Number is required.
-              </div>
-                        )}
-       </div>
-     </div>
-
+                 {validationErrors.phone && (
+              <div className="invalid-feedback d-block">
+               Phone Number is required.
+                 </div>
+                           )}
+          </div>
+        </div>
+ 
         {/* Call Time (Radio Buttons) */}
         <div className="d-flex align-items-center gap-4 mb-2">
           <label className="form-label mb-0">Best Time To Call:</label>
@@ -154,22 +201,22 @@ const Contact=()=>{
                 name="calltime"
                 value={time}
                 checked={formData.time === time}
-                onChange={(e)=>handleChange(e)}
+                onChange={handleChange}
               />
               <label className="form-check-label">{time}</label>
             </div>
           ))}
         </div>
-
+ 
         {/* Location */}
         <div className="mb-2 row">
-          <label className="col-sm-2 col-form-label">Location:</label>
+          <label className="col-md-3 col-form-label">Location:</label>
           <div className="col-sm-3">
             <input
               type="text"
               name="location"
               value={formData.location}
-              onChange={(e)=>handleChange(e)}
+              onChange={handleChange}
               className="form-control"
             />
                              {validationErrors.location && (
@@ -179,23 +226,23 @@ const Contact=()=>{
                            )}
           </div>
         </div>
-
-        
+ 
+       
         <h2>About the Project</h2>
         <div class='mb-2' style={{ border: '1px solid' }}>
             <div class='container ms-3'>
-          <div >
+          <div class="col-md-6 d-flex align-items-center  gap-2">
             <label>Budget:</label>
             <input
               type="range"
               name="budget"
               min={1000}
-              max={100000}
+              max={10000}
               step={100}
               value={formData.budget}
-              onChange={(e)=>handleChange(e)}
+              onChange={handleChange}
             />
-            <div class="col-sm-3">
+            <div class="col-sm-5">
             <input
               type="number"
               value={formData.budget}
@@ -203,8 +250,8 @@ const Contact=()=>{
               className="form-control"
             />
           </div>
-          </div>
-
+          </div><br></br>
+ 
           {/* Services (Checkboxes) */}
           <fieldset >
             <legend>Services Needed:</legend>
@@ -215,22 +262,22 @@ const Contact=()=>{
                   type="checkbox"
                   value={svc}
                   checked={formData.services.includes(svc)}
-                  onChange={(e)=>handleChange(e)}
+                  onChange={handleChange}
                 />
                 <label className="form-check-label">{svc}</label>
               </div>
             ))}
-          </fieldset>
-
+          </fieldset><br></br>
+ 
           {/* Current Website */}
           <div className="mb-2 row">
-            <label className="col-sm-2 col-form-label">Current Website:</label>
+            <label className="col-md-3 col-form-label">Current Website:</label>
             <div className="col-sm-3">
               <input
                 type="text"
                 name="currentwebsite"
                 value={formData.currentwebsite}
-                onChange={(e)=>handleChange(e)}
+                onChange={handleChange}
                 className="form-control"
               />
               {validationErrors.currentwebsite && (
@@ -240,26 +287,27 @@ const Contact=()=>{
                            )}
             </div>
           </div>
-
+ 
           {/* Number of Pages */}
           <div className="mb-2 row">
-            <label className="col-sm-2 col-form-label">Number of Pages:</label>
+            <label className="col-md-3 col-form-label">Number of Pages:</label>
             <div className="col-sm-3">
               <input
                 type="number"
                 name="noofpages"
                 value={formData.noofpages}
-                onChange={(e)=>handleChange(e)}
-                className="form-control"/>
-                {validationErrors.phone && (
-                  <div className="invalid-feedback d-block">
-                   Number of Pages is required.
-                     </div>
-                               )}
-                    </div>
-                </div>
+                onChange={handleChange}
+                className="form-control"
+              />
+              {validationErrors.phone && (
+              <div className="invalid-feedback d-block">
+               Number of Pages is required.
+                 </div>
+                           )}
+            </div>
+          </div>
         </div><br></br>
-
+ 
         {/* Submit Button */}
         <div className="col-12 ">
           <button type="submit" className="btn btn-primary ms-3 mb-2">
@@ -269,10 +317,10 @@ const Contact=()=>{
         </div>
       </form>
     </div>
-    
+   
   );
 }
-
-
-
+ 
+ 
+ 
 export default Contact;
