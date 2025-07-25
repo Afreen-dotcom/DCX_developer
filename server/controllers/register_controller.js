@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import RegisterModel from "../models/register_model.js";
 import dotenv from "dotenv";
-import { verifyToken} from '../middleware/auth.js'
 dotenv.config();
  
 export const createProfile= async (req,res)=>{
