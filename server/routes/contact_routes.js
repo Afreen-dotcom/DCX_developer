@@ -3,8 +3,6 @@ var contactRouter=express.Router(); //To import Router
 import {createContact} from '../controllers/contact_controller.js';
 
 contactRouter.post('/',createContact);
-// contactRouter.get('/get/:id',getContact);
-// contactRouter.get('/getAll',getContacts);
-// contactRouter.put('/update/:id',updateContact);
+
 
 export default contactRouter;

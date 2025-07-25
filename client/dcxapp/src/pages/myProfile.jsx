@@ -15,14 +15,14 @@ export const MyProfile =()=>{
         const [Availability,setAvailability]=useState(user.Availability);
         const [showSuccessToast, setShowSuccessToast] = useState(false);
         const [showErrorToast, setShowErrorToast] = useState(false);
-        const[errorMessage,setErrorMessage]=useState("Something went wrong. Please try again.");
+       
          const [errors, setErrors] = useState({});
 
          
         const validate = () => {
             const newErrors = {};
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+          
           
             if (firstName.length < 3) newErrors.firstName = true;
             if (lastName.length < 3) newErrors.lastName = true;
@@ -33,10 +33,11 @@ export const MyProfile =()=>{
             return Object.keys(newErrors).length === 0;
           };
 
-          const token = localStorage.getItem('token'); // Make sure 'token' is the correct key
+    
 
           const handleSubmit=(e)=>{
             e.preventDefault()
+            if(validate()){
             var payload={
                 firstName:firstName,
                 lastName: lastName,
@@ -58,11 +59,15 @@ export const MyProfile =()=>{
               })
               .then(response => response.json())
               .then(data => {
-                console.log('Update successful:', data);
+                
+                setShowSuccessToast(true)
+                console.log('Update successful');
               })
               .catch(error => {
+                setShowErrorToast(true)
                 console.log('Error updating:', error);
               });
+            }
           }
 return(
 
@@ -92,7 +97,7 @@ return(
       <strong className="me-auto">Error</strong>
     </Toast.Header>
     <Toast.Body className="text-white">
-      {errorMessage}
+    Something went wrong. Please try again.
     </Toast.Body>
   </Toast>
 
@@ -106,7 +111,7 @@ return(
           
 
 
-            <div class="col-md-6 d-flex align-items-center mb-3">
+            <div class="col-md-7 d-flex align-items-center mb-3">
 
             <label for="exampleFormControlInput1" class="form-label mb-0 fixed-label" >First Name</label>
             <div>
@@ -115,14 +120,14 @@ return(
               </div>
 
               </div>
-                <div class="col-md-6 d-flex align-items-center gap-2 mb-3">
+                <div class="col-md-7 d-flex align-items-center gap-2 mb-3">
                 <label for="exampleFormControlInput1" class="form-label mb-0 fixed-label" >Last Name</label>
                 <div>
                 <input type="text" class={`form-control ${errors.lastName ? 'border-danger' : ''}`} placeholder="Enter your last name" onChange={(e)=>setLastName(e.target.value)} value={lastName}></input>
                 {errors.lastName?<small class='red-text'>Enter more than three chars</small>:''}
                 </div>
                 </div>
-                <div class="col-md-6 d-flex align-items-center gap-2 mb-3">
+                <div class="col-md-7 d-flex align-items-center gap-2 mb-3">
                 <label for="exampleFormControlInput1" class="form-label mb-0 fixed-label">Email</label>
                 <div>
                 <input type="email" class={`form-control ${errors.email? 'border-danger' : ''}`} id="exampleFormControlInput1" placeholder="name@example.com" onChange={(e)=>setEmail(e.target.value)} value={email}></input>
@@ -130,7 +135,7 @@ return(
                 </div>
                 </div>
                
-                <div class="col-md-6 d-flex align-items-center gap-2 mb-3">
+                <div class="col-md-7 d-flex align-items-center gap-2 mb-3">
                 <label for="exampleFormControlInput1" class="form-label mb-0 fixed-label" >Skills</label>
                 
                 <div>
@@ -138,8 +143,24 @@ return(
                 {errors.skills?<small class='red-text'>Enter more than three chars</small>:''}
                 </div>
                 </div>
+                
                  
-                <div class="col-md-6 d-flex align-items-center gap-2">
+                <div class="col-md-7 d-flex align-items-center gap-2 mb-3">
+                <label for="exampleFormControlInput1" class="form-label mb-0 fixed-label" >City</label>
+                <div>
+                <input type="text" class='form-control' id="exampleFormControlInput1" value={city} onChange={(e)=>setCity(e.target.value)}></input>
+                </div>
+                </div>
+
+
+                <div class="col-md-7 d-flex align-items-center gap-2 mb-3">
+                <label for="exampleFormControlInput1" class="form-label mb-0 fixed-label">State</label>
+                <div>
+                <input type="text" class='form-control' id="exampleFormControlInput1" value={state} onChange={(e)=>setState(e.target.value)}></input>
+                </div>
+                </div>
+
+                <div class="col-md-7 d-flex align-items-center gap-2">
                 <label className="form-label mb-0">Availability</label>
               {[ 'Full-Time', 'Part-Time'].map((time) => (
             <div key={time} className="form-check form-check-inline">
@@ -147,7 +168,9 @@ return(
                 className="form-check-input"
                 type="radio"
                 name="Availability"
-                value={Availability}
+                value={time}
+                checked={Availability === time}
+
                 onChange={(e)=>{setAvailability(e.target.value)}}
               />
               <label className="form-check-label">{time}</label>
